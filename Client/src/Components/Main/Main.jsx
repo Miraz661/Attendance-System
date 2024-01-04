@@ -1,9 +1,9 @@
-import NavBar from "../HeadFooter/NavBar"
+import { Outlet } from "react-router-dom"
 
 function Main() {
   return (
     <>
-        <NavBar></NavBar>
+        <Outlet></Outlet>
     </>
   )
 }

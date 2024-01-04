@@ -35,7 +35,7 @@ app.post('/auth', (req, res) => {
       } else {
         if (results.length > 0) {
           // Authentication successful
-          res.status(200).json({ message: 'Login successful' });
+          res.status(200).json({ message: 'Login successful',email:email });
         } else {
           // Authentication failed
           res.status(401).json({ message: 'Login failed' });

@@ -1,4 +1,4 @@
-import '../../CSS/Registration.css';
+import '../../../CSS/Registration.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
@@ -12,9 +12,9 @@ function Registration() {
   const navigate = useNavigate();
   const [statusColor, setStatusColor] = useState('');
   const [isCheck, setIsCheck] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState('users');
   const [verified, setVerified] = useState(0);
+  const [massege,setMassege] = useState('');
 
 
   const handleEmailChange = (e) => {
@@ -51,6 +51,7 @@ function Registration() {
               const response = await axios.post('http://localhost:3000/verify/user', { email: newData.email });
 
               setVerified(response.data.code);
+              setMassege('Please check your mail for the code...');
 
               console.log(response.data.code);
             } catch (error) {
@@ -84,9 +85,9 @@ function Registration() {
         setData([...data, { id: response.data.id, email: newData.email, password: newData.password }]);
         setStatus('Signup successful!');
         setStatusColor('text-green-600 text-xl');
-        setShowLogin(true);
         setUser('users');
         setVerified(0);
+        setMassege('Signup Successful...Now you can login!');
 
         // Clear the form
         setNewData({ email: "", password: "", confPass: "" });
@@ -110,7 +111,7 @@ function Registration() {
 
       // Handle successful authentication (e.g., store tokens, redirect)
       console.log('Authentication successful', response.data);
-      navigate(`/home?param1=${email}`);
+      navigate(`/home?user=${response.data.email}`);
     } catch (error) {
       // Handle authentication failure (e.g., show error message)
       console.error('Authentication failed', error.message);
@@ -118,14 +119,16 @@ function Registration() {
   }
 
   return (
-    <div className="mainBody">
+    <div className="mainBody relative">
+      <p className={`absolute top-12 bg-[#2b2b6d] rounded text-[wheat] ${massege==''?'':'p-2'}`}>{massege}</p>
       {
         verified ?
-          <div className='section'>
-            <form onSubmit={handleValidation}>
-              <label htmlFor="code" className='block'>OTP Code:</label>
-              <input name='code' id="code" type='text' placeholder='Enter code ...' required />
-              <button className='block' type='submit'>Submit</button>
+          <div className="verify rounded py-10 px-6">
+            <h2 className='text-center font-semibold text-2xl text-[wheat] pb-4'>Verify</h2>
+            <form onSubmit={handleValidation} className='px-3'>
+              <label htmlFor="code" className='block text-white'>OTP Code:</label>
+              <input className='mb-6 px-3 py-2 text-black' name='code' id="code" type='text' placeholder='Enter code ...' required />
+              <button className='block border-2 border-white px-4 py-2 rounded text-white' type='submit'>Submit</button>
             </form>
           </div>
           :
@@ -172,7 +175,6 @@ function Registration() {
                   </span>
                   <span className='flex justify-between'>
                     <button type="submit" className='submitBtn'>Sign up</button>
-                    <label htmlFor="check" onClick={() => { setCheck(true) }} className={`text-md underline text-white cursor-pointer ${showLogin ? 'block' : 'hidden'}`}>Login now</label>
                   </span>
                 </form>
               </div>
