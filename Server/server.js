@@ -46,6 +46,31 @@ app.post('/auth', (req, res) => {
 });
 
 
+app.post('/createUser/table',(req,res)=>{
+  const {userId} = req.body;
+  console.log(userId);
+  db.query(`Create table ${userId}(
+    Id int primary key auto_increment,
+      batch int not null,
+      section varchar(10) not null,
+      img varchar(100) not null
+  );`)
+})
+
+
+app.post('/loadbatch/data',(req,res)=>{
+  const {userReq} = req.body;
+  db.query(`SELECT * FROM ${userReq}`,(err,results)=>{
+    if(err){
+      res.status(500).send("Internal Server Error");
+    }else{
+      res.status(200).json({result:results});
+    }
+  })
+})
+
+
+
 app.post('/addData/:user', (req, res) => {
   const user = req.params.user;
   const { email, password } = req.body;

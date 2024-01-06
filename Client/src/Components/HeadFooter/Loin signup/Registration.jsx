@@ -89,6 +89,17 @@ function Registration() {
         setVerified(0);
         setMassege('Signup Successful...Now you can login!');
 
+        let userId = newData.email;
+        userId = userId.split("@");
+        userId = userId[0]+"batches";
+
+        try {
+          const response = await axios.post('http://localhost:3000/createUser/table',{userId});
+          console.log(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+
         // Clear the form
         setNewData({ email: "", password: "", confPass: "" });
       } catch (error) {
