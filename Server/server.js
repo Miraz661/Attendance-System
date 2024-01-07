@@ -60,7 +60,7 @@ app.post('/createUser/table',(req,res)=>{
 
 app.post('/loadbatch/data',(req,res)=>{
   const {userReq} = req.body;
-  db.query(`SELECT * FROM ${userReq}`,(err,results)=>{
+  db.query(`SELECT * FROM ${userReq} ORDER BY batch ASC, section ASC`,(err,results)=>{
     if(err){
       res.status(500).send("Internal Server Error");
     }else{
@@ -83,6 +83,37 @@ app.post('/addData/:user', (req, res) => {
       res.status(500).send("Error");
     } else {
       res.json({ message: 'Signup successfully', id: result.insertId, Error: '' });
+    }
+  });
+});
+
+
+app.post('/addBatches/:userReq',(req,res)=>{
+  const userReq = req.params.userReq;
+  const {batch,sec,img} = req.body;
+  const sql = `INSERT INTO ${userReq} (id,batch,section,img) VALUES (?,?,?,?)`;
+  let id = 'NULL';
+  db.query(sql,[id,batch,sec,img],(err,result) =>{
+    if(err){
+      console.error('Error executing MySQL query: ',err);
+      res.status(500).send("Error");
+    }else{
+      res.json({message:'Batch added successfully',id:result.insertId,Error:''})
+    }
+  });
+});
+
+
+app.post('/deleteBatch/:userReq',(req,res)=>{
+  const userReq = req.params.userReq;
+  const {batch,sec} = req.body;
+  const sql = `DELETE FROM ${userReq} WHERE batch = ${batch} AND section = '${sec}' ORDER BY batch ASC, section ASC`;
+  db.query(sql,(err,result)=>{
+    if(err){
+      console.error('Error executing MySQL query: ',err);
+      res.status(500).send("Error");
+    }else{
+      res.json({message:'Batch delete successfully',Error:''});
     }
   });
 });

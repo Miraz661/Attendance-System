@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import '../../../CSS/Home.css';
 import { FaTrash } from 'react-icons/fa'
-import batchBg from '../../../assets/Images/batchBg1.jpg';
 import axios from 'axios';
+
 
 
 function Home() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const user = params.get('user');
+  console.log(user);
   let userReq = user.split("@");
   userReq = userReq[0]+'batches';
   const navigation = useNavigate();
@@ -19,9 +20,10 @@ function Home() {
   const [showDelConf, setShowDelConf] = useState(0);
   const [account, setAccount] = useState(0);
   const [batchData, setBatchData] = useState([]);
+  const [rerend,setRerend] = useState(0);
+  const [delData,setDelData] = useState({batch:0,sec:''})
 
   useEffect(() => {
-    console.log(userReq);
     const fetchData = async () => {
       try {
         const response = await axios.post('http://localhost:3000/loadbatch/data',{userReq});
@@ -32,11 +34,11 @@ function Home() {
       }
     };
     fetchData();
-  }, [userReq]);
+  }, [userReq,rerend]);
 
 
   const handleHome = () => {
-    navigation(`/home?user=${"user"}`);
+    navigation(`/home?user=${user}`);
   }
 
   const openBatchAdd = () => {
@@ -47,22 +49,57 @@ function Home() {
     setShowNewBatch(0);
   }
 
-  const handleNewBatchAddition = (e) => {
+  const handleNewBatchAddition = async (e) => {
     e.preventDefault();
-    setShowNewBatch(0);
+    const batch = e.target.batch.value;
+    const sec = e.target.sec.value;
+    const num = Math.floor(Math.random() * 10) +1;
+    console.log(num);
+    const img = `/src/assets/Images/batchBg${num}.jpg`;
+    try{
+      const response = await axios.post(`http://localhost:3000/addBatches/${userReq}`, {batch,sec,img});
+      console.log(response.message);
+      setShowNewBatch(0);
+      if(rerend){
+        setRerend(0);
+      }else{
+        setRerend(1);
+      }
+    }catch (error) {
+      console.error('Error adding data:', error);
+    }
   }
 
-  const handleBatch = () => {
-    // let batch = user.split("@");
-    // batch = batch[0] + 'batch53B';
-    // navigation(`/course?batch=${batch}`);
+  const handleBatch = (e) => {
+    const batch = e.currentTarget.querySelector('h1').innerText;
+    const sec = e.currentTarget.querySelector('h3').innerText;
+    let batchSec = userReq+batch+sec;
+    console.log(batchSec);
+    navigation(`/course?batch=${batchSec}`);
   }
 
-  const handleDelBatch = () => {
+  const handleDelBatch = (e) => {
+    const parentEle = e.currentTarget.parentElement;
+    const childEle = parentEle.querySelector('.parent');
+    const batch = childEle.querySelector('h1').innerText;
+    const sec = childEle.querySelector('h3').innerText;
+    setDelData({batch,sec});
     setShowDelConf(1);
   }
 
-  const handleDelConf = () => {
+  const handleDelConf = async () => {
+    try{
+      const response = await axios.post(`http://localhost:3000/deleteBatch/${userReq}`, delData);
+      console.log(response.message);
+      setShowNewBatch(0);
+      if(rerend){
+        setRerend(0);
+      }else{
+        setRerend(1);
+      }
+    }catch (error) {
+      console.error('Error adding data:', error);
+    }
     setShowDelConf(0)
   }
 
@@ -93,7 +130,7 @@ function Home() {
             <span className='text-2xl' onClick={openBatchAdd}>+</span>
             {
               showNewBatch ?
-                <div className='w-screen h-screen absolute top-0 left-0 bg-[#000000de] z-[2] flex justify-center items-center'>
+                <div className='cursor-default w-screen h-screen absolute top-0 left-0 bg-[#000000de] z-[2] flex justify-center items-center'>
                   <form className='p-4 border-2 rounded relative bg-black' onSubmit={handleNewBatchAddition}>
                     <span className='absolute top-0 right-0 text-3xl pr-2 rotate-45 cursor-pointer' onClick={closeBatchAdd}>+</span>
                     <h1 className='text-center text-xl font-semibold pb-4'>Add new batch</h1>
@@ -128,11 +165,11 @@ function Home() {
       <div className='mainSectionHeight m-6 p-4 rounded bg-[#181818] max-w-full overflow-y-scroll flex flex-wrap justify-between items-center'>
         {
           batchData.map(batch => (
-            <div key={batch.id} className='w-60 h-32 border-2 mb-4 relative rounded bg-cover bg-center' style={{ backgroundImage: `url('${batchBg}')` }}>
+            <div key={batch.id} className='w-60 h-32 border-2 mb-4 relative rounded bg-cover bg-center' style={{ backgroundImage: `url('${batch.img}')` }}>
               <div className='absolute bottom-0 left-0 bg-[#ffffffb0] w-full px-4 py-2 flex justify-between'>
-                <div className='batch w-max text-xl font-semibold cursor-pointer' onClick={handleBatch}>
-                  <h1 className=''>{batch.batch}</h1>
-                  <h3>{batch.section}</h3>
+                <div className='parent batch w-max text-xl font-semibold cursor-pointer' onClick={handleBatch}>
+                  <h1 name='batch' className=''>{batch.batch}</h1>
+                  <h3 name='section'>{batch.section}</h3>
                 </div>
                 <div className='text-xl h-max px-[2px] py-[2px] rounded-full cursor-pointer hover:bg-[#0000009c]' onClick={handleDelBatch}>
                   <FaTrash />
