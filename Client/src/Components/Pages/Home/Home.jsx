@@ -186,7 +186,7 @@ function Home() {
             <div className='border-2 rounded py-3 px-5 text-white bg-black'>
               <div className='pb-4'>
                 <h1 className='text-3xl text-center'>Are you sure?</h1>
-                <h2 className='text-sm text-center'>wants to delete : 53B</h2>
+                <h2 className='text-sm text-center'>wants to delete : {delData.batch+delData.sec}</h2>
               </div>
               <div className='flex justify-between'>
                 <div className='px-2 py-1 border-2 rounded cursor-pointer' onClick={handleDelConf}>Confirm</div>
