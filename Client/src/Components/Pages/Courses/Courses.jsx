@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import '../../../CSS/Home.CSS'
 
 
 function Courses() {
@@ -62,8 +63,9 @@ function Courses() {
     navigation('/');
   }
 
-  const handleCourse = () => {
-    navigation(`/students?course=2211081038batches53BCSEC-340`);
+  const handleCourse = (e) => {
+    const code = e.currentTarget.querySelector('h1').innerText;
+    navigation(`/students?course=${user+code}`);
   }
 
   const handleDelCourse = (e) => {

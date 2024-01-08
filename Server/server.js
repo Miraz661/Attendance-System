@@ -78,8 +78,10 @@ app.post('/loadbatch/data', (req, res) => {
 
 app.post('/loadcourse/data', (req, res) => {
   const { user } = req.body;
+  let batchUrl = user.split('batches');
+  batchUrl = batchUrl[0]+'courses'+batchUrl[1];
   console.log(user);
-  db.query(`SELECT * FROM ${user} ORDER BY code ASC`, (err, results) => {
+  db.query(`SELECT * FROM ${batchUrl} ORDER BY code ASC`, (err, results) => {
     if (err) {
       res.status(500).send("Internal Server Error");
     } else {
@@ -114,7 +116,8 @@ app.post('/addData/:user', (req, res) => {
 app.post('/addBatches/:userReq', (req, res) => {
   const userReq = req.params.userReq;
   const { batch, sec, img } = req.body;
-  const batchUrl = userReq+batch+sec;
+  let batchUrl = userReq.split('batches');
+  batchUrl = batchUrl[0]+'courses'+batch+sec;
   db.query(`Create table IF NOT EXISTS ${batchUrl}(
     Id int primary key auto_increment,
       code varchar(50) not null,
@@ -137,7 +140,18 @@ app.post('/addBatches/:userReq', (req, res) => {
 app.post('/addCourse/:user', (req, res) => {
   const user = req.params.user;
   const { code, title, img } = req.body;
-  const sql = `INSERT INTO ${user} (id,code,title,img) VALUES (?,?,?,?)`;
+  let batchUrl = user.split('batches');
+  batchUrl = batchUrl[0]+'courses'+batchUrl[1];
+  let students = user+"students";
+  db.query(`Create table IF NOT EXISTS ${students}(
+    Id int primary key auto_increment,
+      stId varchar(50) not null,
+      stName varchar(100) not null,
+      stBatch varchar(10) not null,
+      stSection varchar(10) not null,
+      stCourseCode varchar(100) not null
+  );`)
+  const sql = `INSERT INTO ${batchUrl} (id,code,title,img) VALUES (?,?,?,?)`;
   let id = 'NULL';
   db.query(sql, [id, code, title, img], (err, result) => {
     if (err) {
