@@ -3,6 +3,7 @@ import Main from '../Main/Main';
 import Registraion from '../HeadFooter/Loin signup/Registration'
 import Home from '../Pages/Home/Home';
 import Courses from '../Pages/Courses/Courses';
+import Students from '../Pages/Students/Students';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,9 @@ export const router = createBrowserRouter([
       },{
         path:"/course",
         element: <Courses/>
+      },{
+        path:"/students",
+        element: <Students />
       }
     ],
   },

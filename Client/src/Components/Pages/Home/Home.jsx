@@ -162,7 +162,7 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className='mainSectionHeight m-6 p-4 rounded bg-[#181818] max-w-full overflow-y-scroll flex flex-wrap justify-between items-center'>
+      <div className='mainSectionHeight m-6 p-4 rounded bg-[#181818] max-w-full overflow-y-scroll flex flex-wrap justify-center xsm:justify-between items-center'>
         {
           batchData.map(batch => (
             <div key={batch.id} className='w-60 h-32 border-2 mb-4 relative rounded bg-cover bg-center' style={{ backgroundImage: `url('${batch.img}')` }}>
