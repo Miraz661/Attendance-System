@@ -1,4 +1,4 @@
-.mainSectionHeight{
+.mainSectionHeight {
     height: calc(100vh - 120px);
 
 }
@@ -7,6 +7,19 @@
     width: 0;
 }
 
-.batch:hover h1,.batch:hover h3{
+.batch:hover h1,
+.batch:hover h3 {
     text-decoration: underline;
 }
+
+
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+#dateInput::-webkit-calendar-picker-indicator {
+    filter: invert(2);
+    width: 20px;
+    height: 20px;
+  }

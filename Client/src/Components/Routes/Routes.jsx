@@ -4,6 +4,7 @@ import Registraion from '../HeadFooter/Loin signup/Registration'
 import Home from '../Pages/Home/Home';
 import Courses from '../Pages/Courses/Courses';
 import Students from '../Pages/Students/Students';
+import Attendance from '../Pages/Attendance/Attendance';
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,9 @@ export const router = createBrowserRouter([
       },{
         path:"/students",
         element: <Students />
+      },{
+        path:"/attendance",
+        element: <Attendance />
       }
     ],
   },
