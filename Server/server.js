@@ -79,7 +79,7 @@ app.post('/loadbatch/data', (req, res) => {
 app.post('/loadcourse/data', (req, res) => {
   const { user } = req.body;
   let batchUrl = user.split('batches');
-  batchUrl = batchUrl[0]+'courses'+batchUrl[1];
+  batchUrl = batchUrl[0] + 'courses' + batchUrl[1];
   console.log(user);
   db.query(`SELECT * FROM ${batchUrl} ORDER BY code ASC`, (err, results) => {
     if (err) {
@@ -90,6 +90,19 @@ app.post('/loadcourse/data', (req, res) => {
   })
 })
 
+
+app.post('/loadStudent/data', (req, res) => {
+  const { getSt } = req.body;
+  const { code } = req.body;
+  let user = getSt + 'students';
+  db.query(`SELECT * FROM ${user} WHERE stCourseCode = '${code}' ORDER BY stId ASC`, (err, results) => {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.status(200).json({ result: results });
+    }
+  })
+})
 
 app.post('/addData/:user', (req, res) => {
   db.query(`Create table IF NOT EXISTS users(
@@ -117,7 +130,7 @@ app.post('/addBatches/:userReq', (req, res) => {
   const userReq = req.params.userReq;
   const { batch, sec, img } = req.body;
   let batchUrl = userReq.split('batches');
-  batchUrl = batchUrl[0]+'courses'+batch+sec;
+  batchUrl = batchUrl[0] + 'courses' + batch + sec;
   db.query(`Create table IF NOT EXISTS ${batchUrl}(
     Id int primary key auto_increment,
       code varchar(50) not null,
@@ -141,8 +154,8 @@ app.post('/addCourse/:user', (req, res) => {
   const user = req.params.user;
   const { code, title, img } = req.body;
   let batchUrl = user.split('batches');
-  batchUrl = batchUrl[0]+'courses'+batchUrl[1];
-  let students = user+"students";
+  batchUrl = batchUrl[0] + 'courses' + batchUrl[1];
+  let students = user + "students";
   db.query(`Create table IF NOT EXISTS ${students}(
     Id int primary key auto_increment,
       stId varchar(50) not null,
@@ -164,6 +177,34 @@ app.post('/addCourse/:user', (req, res) => {
 });
 
 
+app.post('/addStudent/:target', (req, res) => {
+  const target = req.params.target;
+  const { id, name, batch, section, code } = req.body;
+  let batchUrl = target.split("students");
+  batchUrl = batchUrl[0] + 'Attendance';
+  console.log(section);
+  db.query(`Create table IF NOT EXISTS ${batchUrl}(
+    Id int primary key auto_increment,
+      date varchar(50) not null,
+      stId varchar(50) not null,
+      courseCode varchar(50) not null,
+      Attendance varchar(50) not null
+  );`)
+  const sql = `INSERT INTO ${target} (Id,stId,stName,stBatch,stSection,stCourseCode) VALUES (?,?,?,?,?,?)`;
+  let Id = 'NULL';
+  db.query(sql, [Id, id, name, batch, section, code], (err, result) => {
+    if (err) {
+      console.error('Error executing MySQL query: ', err);
+      res.status(500).send("Error");
+    } else {
+      res.json({ message: 'Batch added successfully', id: result.insertId, Error: '' })
+      console.log(target);
+    }
+  });
+});
+
+
+
 app.post('/deleteBatch/:userReq', (req, res) => {
   const userReq = req.params.userReq;
   const { batch, sec } = req.body;
@@ -179,6 +220,20 @@ app.post('/deleteBatch/:userReq', (req, res) => {
 });
 
 
+app.post('/deleteStudent/:target', (req, res) => {
+  const target = req.params.target;
+  const { delId, code } = req.body;
+  const sql = `DELETE FROM ${target} WHERE stId = ${delId} AND stCourseCode = '${code}'`;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error executing MySQL query: ', err);
+      res.status(500).send("Error");
+    } else {
+      res.json({ message: 'Batch delete successfully', Error: '' });
+    }
+  });
+});
+
 app.post('/deleteCourse/:user', (req, res) => {
   const user = req.params.user;
   const { code } = req.body;
@@ -192,6 +247,33 @@ app.post('/deleteCourse/:user', (req, res) => {
     }
   });
 });
+
+
+app.post('/addAttendance/:target', (req, res) => {
+  let target = req.params.target;
+  target = target.split("students");
+  target = target[0] + 'Attendance';
+  const data = req.body.data;
+  const { code, today } = req.body;
+  let sql = `INSERT INTO ${target} (Id,date,stId,courseCode,Attendance) VALUES `;
+  let Id = 'NULL';
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      const value = data[key];
+      let qur = `('${Id}','${today}','${key}','${code}','${value}'),`;
+      sql += qur;
+    }
+  }
+  sql = sql.slice(0, -1);
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error executing MySQL query: ', err);
+      res.status(500).send("Error");
+    } else {
+      res.json({ message: 'Batch added successfully', id: result.insertId, Error: '' })
+    }
+  });
+})
 
 
 app.post('/verify/user', async (req, res) => {

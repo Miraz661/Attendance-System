@@ -1,39 +1,36 @@
 import { FaCheck, FaTrash } from 'react-icons/fa'
 import { useState } from 'react'
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
 
 function Student(props) {
-    const { id, upDateDel, onDataUpdate } = props;
+    const { stId,id,stBatch,stSection,stName, upDateDel, onDataUpdate } = props;
     const [attendance, setAttendance] = useState(0);
 
     const present = () => {
         setAttendance(1);
-        onDataUpdate(id, 'true');
+        onDataUpdate(stId, 'Present');
     }
 
     const absent = () => {
         setAttendance(2);
-        onDataUpdate(id, 'false');
+        onDataUpdate(stId, 'Absent');
     }
 
     const handleDel = () => {
-        upDateDel(1);
+        upDateDel(1,stId);
     }
 
     return (
-        <tr className="border-2">
-            <td className="border-2 text-center">53</td>
-            <td className="border-2 text-center">B</td>
-            <td className="border-2 text-center">Miraz Hossain</td>
-            <Link to="/attendance" className='w-full block'>
-                <td className="text-center w-full block hover:underline">{id}</td>
-            </Link>
+        <tr key={id} className="border-2">
+            <td className="border-2 text-center">{stBatch}</td>
+            <td className="border-2 text-center">{stSection}</td>
+            <td className="border-2 text-center">{stName}</td>
+            <td className="text-center w-full block">{stId}</td>
             <td className="border-2">
                 <button className={`flex justify-center w-full`} onClick={present}><FaCheck className={`rounded-full bg-white ${attendance == 1 ? 'text-[green]' : ''} p-[4px] text-2xl`} /></button>
             </td>
             <td className="border-2">
-                <label className="flex justify-center w-full" onClick={absent}><FaCheck className={`rounded-full bg-white ${attendance == 2 ? 'text-[red]' : ''} p-[4px] text-2xl`} /></label>
+                <button className="flex justify-center w-full" onClick={absent}><FaCheck className={`rounded-full bg-white ${attendance == 2 ? 'text-[red]' : ''} p-[4px] text-2xl`} /></button>
             </td>
             <td className="flex justify-center pt-[2px]"><FaTrash className='p-[2px] text-2xl rounded-full cursor-pointer' onClick={handleDel} /></td>
         </tr>
@@ -44,7 +41,11 @@ export default Student
 
 
 Student.propTypes = {
-    id: PropTypes.string.isRequired,
+    stId: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    stBatch: PropTypes.string.isRequired,
+    stSection: PropTypes.string.isRequired,
+    stName: PropTypes.string.isRequired,
     onDataUpdate: PropTypes.func.isRequired,
     upDateDel: PropTypes.func.isRequired,
 };

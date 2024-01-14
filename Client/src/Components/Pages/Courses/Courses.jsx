@@ -5,6 +5,7 @@ import { FaTrash } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import '../../../CSS/Home.CSS'
+import { Link } from "react-router-dom";
 
 
 function Courses() {
@@ -13,6 +14,7 @@ function Courses() {
   const params = new URLSearchParams(search);
   const user = params.get('batch');
   let batchSec = user.split('batches');
+  let home = batchSec[0]+ '@uttarauniversity.edu.bd';
   batchSec = batchSec[1];
   console.log("User:" + user)
   const [account, setAccount] = useState(0);
@@ -65,7 +67,7 @@ function Courses() {
 
   const handleCourse = (e) => {
     const code = e.currentTarget.querySelector('h1').innerText;
-    navigation(`/students?course=${user+code}`);
+    navigation(`/students?course=${user + code}`);
   }
 
   const handleDelCourse = (e) => {
@@ -77,17 +79,16 @@ function Courses() {
   }
 
   const handleDelConf = async () => {
-    console.log(delData);
-    try{
-      const response = await axios.post(`http://localhost:3000/deleteCourse/${user}`, {code:delData});
+    try {
+      const response = await axios.post(`http://localhost:3000/deleteCourse/${user}`, { code: delData });
       console.log(response.message);
       setShowNewCourse(0);
-      if(rerend){
+      if (rerend) {
         setRerend(0);
-      }else{
+      } else {
         setRerend(1);
       }
-    }catch (error) {
+    } catch (error) {
       console.error('Error adding data:', error);
     }
     setShowDelConf(0)
@@ -101,19 +102,19 @@ function Courses() {
     e.preventDefault();
     const code = e.target.code.value;
     const title = e.target.title.value;
-    const num = Math.floor(Math.random() * 10) +1;
+    const num = Math.floor(Math.random() * 10) + 1;
     const img = `/src/assets/Images/batchBg${num}.jpg`;
-    console.log(code,title);
-    try{
-      const response = await axios.post(`http://localhost:3000/addCourse/${user}`, {code,title,img});
+    console.log(code, title);
+    try {
+      const response = await axios.post(`http://localhost:3000/addCourse/${user}`, { code, title, img });
       console.log(response.message);
       setShowNewCourse(0);
-      if(rerend){
+      if (rerend) {
         setRerend(0);
-      }else{
+      } else {
         setRerend(1);
       }
-    }catch (error) {
+    } catch (error) {
       console.error('Error adding data:', error);
     }
   }
@@ -122,7 +123,9 @@ function Courses() {
     <div className="">
       <div className='bg-[#181818] text-white flex justify-between align-items-center w-full py-4 md:px-10 sm:px-6 px-2'>
         <div className='text-3xl font-semibold'>
-          <h1 className='cursor-pointer'>Courses</h1>
+          <Link to={`/home?user=${home}`}>
+            <h1 className='cursor-pointer'>Courses</h1>
+          </Link>
         </div>
         <div className='text-2xl font-semibold sm:block hidden'>
           <h1 className='select-none'>{batch + section}</h1>

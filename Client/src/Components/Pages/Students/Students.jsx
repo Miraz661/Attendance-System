@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import '../../../CSS/Home.css';
 import { useNavigate } from "react-router-dom";
 import avater from '../../../assets/Images/avater.png';
-// import axios from "axios";
+import axios from "axios";
 import Student from "./Student";
+import { Link } from "react-router-dom";
 
 
 function Students() {
@@ -13,14 +14,22 @@ function Students() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const user = params.get('course');
+  let target = user.split("CSEC");
+    target = target[0] + 'students';
+  let home = user.split("batches");
+  home = home[0]+ '@uttarauniversity.edu.bd';
   let code = user.split('CSEC');
+  const getSt = code[0];
   code = 'CSEC' + code[1];
   const [showNewCourse, setShowNewCourse] = useState(0);
   const [account, setAccount] = useState(0);
   const [attendanceData, setAttendanceData] = useState({})
   const [showDelConf, setShowDelConf] = useState(0);
   const [today, setToday] = useState('');
-  const [height,setHeight] = useState('100vh');
+  const [height, setHeight] = useState('100vh');
+  const [stData, setStData] = useState([]);
+  const [rerend, setRerend] = useState(0);
+  const [delId,setDelId] = useState();
 
   useEffect(() => {
     const currentDate = new Date();
@@ -31,8 +40,19 @@ function Students() {
     setToday(date);
     const calculatedHeight = window.innerHeight - 191;
     setHeight(calculatedHeight);
-    console.log(height)
   }, [height])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/loadStudent/data', { getSt, code });
+        setStData(response.data.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [getSt, code, rerend])
 
 
 
@@ -54,45 +74,45 @@ function Students() {
   }
 
   const updateData = (key, value) => {
-    setAttendanceData(prevAttendanceData => ({ ...prevAttendanceData, [key]: value }))
+    setAttendanceData({ ...attendanceData, [key]: value })
     console.log(attendanceData);
   };
 
   const handleNewCourseAddition = async (e) => {
     e.preventDefault();
-    // const code = e.target.code.value;
-    // const title = e.target.title.value;
-    // const num = Math.floor(Math.random() * 10) +1;
-    // const img = `/src/assets/Images/batchBg${num}.jpg`;
-    // console.log(code,title);
-    // try{
-    //   const response = await axios.post(`http://localhost:3000/addCourse/${user}`, {code,title,img});
-    //   console.log(response.message);
-    //   setShowNewCourse(0);
-    //   if(rerend){
-    //     setRerend(0);
-    //   }else{
-    //     setRerend(1);
-    //   }
-    // }catch (error) {
-    //   console.error('Error adding data:', error);
-    // }
+    const id = e.target.id.value;
+    const name = e.target.name.value;
+    const batch = e.target.batch.value;
+    const section = e.target.section.value;
+    try {
+      const response = await axios.post(`http://localhost:3000/addStudent/${target}`, { id, name, batch, section, code });
+      console.log(response.message);
+      setShowNewCourse(0);
+      if (rerend) {
+        setRerend(0);
+      } else {
+        setRerend(1);
+      }
+    } catch (error) {
+      console.error('Error adding data:', error);
+    }
     setShowNewCourse(0);
   }
 
   const handleDelConf = async () => {
-    // try{
-    //   const response = await axios.post(`http://localhost:3000/deleteBatch/${userReq}`, delData);
-    //   console.log(response.message);
-    //   setShowNewBatch(0);
-    //   if(rerend){
-    //     setRerend(0);
-    //   }else{
-    //     setRerend(1);
-    //   }
-    // }catch (error) {
-    //   console.error('Error adding data:', error);
-    // }
+    console.log(delId);
+    try{
+      const response = await axios.post(`http://localhost:3000/deleteStudent/${target}`, {delId,code});
+      console.log(response.message);
+      setShowNewCourse(0);
+      if(rerend){
+        setRerend(0);
+      }else{
+        setRerend(1);
+      }
+    }catch (error) {
+      console.error('Error adding data:', error);
+    }
     setShowDelConf(0)
   }
 
@@ -100,12 +120,19 @@ function Students() {
     setShowDelConf(0);
   }
 
-  const upDateDelData = (data) => {
+  const upDateDelData = (data,id) => {
     setShowDelConf(data);
+    setDelId(id);
   }
 
-  const saveData = () => {
-    console.log(today);
+  const saveData = async () => {
+    let data = attendanceData;
+    try{
+      const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, {data,code,today});
+      console.log(response.message);
+    }catch (error) {
+      console.error('Error adding data:', error);
+    }
   }
 
   const handleDateChange = (e) => {
@@ -117,7 +144,9 @@ function Students() {
     <div className="overflow-hidden">
       <div className='bg-[#181818] text-white flex justify-between align-items-center w-full py-4 md:px-10 sm:px-6 px-2'>
         <div className='text-3xl font-semibold'>
-          <h1 className='cursor-pointer'>Students</h1>
+          <Link to={`/home?user=${home}`}>
+            <h1 className='cursor-pointer'>Students</h1>
+          </Link>
         </div>
         <div className='text-2xl font-semibold sm:block hidden'>
           <h1 className='select-none'>{code}</h1>
@@ -133,20 +162,20 @@ function Students() {
                     <h1 className='text-center text-xl font-semibold pb-4'>Add new Course</h1>
                     <div className='flex flex-col max-w-60 self-center'>
                       <div className='pb-2'>
-                        <label htmlFor="code" className='font-medium'>Id:</label>
-                        <input type="text" id='code' placeholder='Enter course code' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <label htmlFor="id" className='font-medium'>Id:</label>
+                        <input type="text" id='id' name="id" placeholder='Enter course code' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
-                        <label htmlFor="title" className='font-medium'>Name:</label>
-                        <input type="text" id='title' placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <label htmlFor="name" className='font-medium'>Name:</label>
+                        <input type="text" id='name' name="name" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
-                        <label htmlFor="title" className='font-medium'>Batch No.:</label>
-                        <input type="text" id='title' placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <label htmlFor="batch" className='font-medium'>Batch No.:</label>
+                        <input type="text" id='batch' name="batch" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
-                        <label htmlFor="title" className='font-medium'>Section::</label>
-                        <input type="text" id='title' placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <label htmlFor="section" className='font-medium'>Section::</label>
+                        <input type="text" id='section' name="section" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <button type='submit' className='border-2 rounded px-4 py-2 w-max hover:bg-[#7b7b7b] cursor-pointer'>Add Now</button>
                     </div>
@@ -187,12 +216,17 @@ function Students() {
             </tr>
           </thead>
           <tbody>
-            <Student id='2211081038' upDateDel={upDateDelData} onDataUpdate={updateData} />
+            {
+              stData.map(st => (
+                <Student key={st.Id} id={st.Id} stId={st.stId} stBatch={st.stBatch} stName={st.stName} stSection={st.stSection} upDateDel={upDateDelData} onDataUpdate={updateData} />
+              ))
+            }
           </tbody>
         </table>
       </div>
-      <div className="w-full flex justify-end px-4">
-        <button onClick={saveData} className="border-2 py-2 px-4 text-white rounded">Save Attendance</button>
+      <div className="w-full flex justify-between px-4">
+        <button className="border-2 py-2 px-4 text-white rounded">View</button>
+        <button onClick={saveData} className="border-2 py-2 px-4 text-white rounded">Save</button>
       </div>
       {
         showDelConf ?
