@@ -204,7 +204,6 @@ app.post('/addStudent/:target', (req, res) => {
 });
 
 
-
 app.post('/deleteBatch/:userReq', (req, res) => {
   const userReq = req.params.userReq;
   const { batch, sec } = req.body;

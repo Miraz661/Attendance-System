@@ -27,10 +27,10 @@ function Student(props) {
             <td className="border-2 text-center">{stName}</td>
             <td className="text-center w-full block">{stId}</td>
             <td className="border-2">
-                <button className={`flex justify-center w-full`} onClick={present}><FaCheck className={`rounded-full bg-white ${attendance == 1 ? 'text-[green]' : ''} p-[4px] text-2xl`} /></button>
+                <button className={`flex justify-center w-full`} onClick={present}><FaCheck className={`rounded-full bg-white ${attendance == 1 ? 'text-[green]' : 'text-[white]'} p-[4px] text-2xl`} /></button>
             </td>
             <td className="border-2">
-                <button className="flex justify-center w-full" onClick={absent}><FaCheck className={`rounded-full bg-white ${attendance == 2 ? 'text-[red]' : ''} p-[4px] text-2xl`} /></button>
+                <button className="flex justify-center w-full" onClick={absent}><FaCheck className={`rounded-full bg-white ${attendance == 2 ? 'text-[red]' : 'text-[white]'} p-[4px] text-2xl`} /></button>
             </td>
             <td className="flex justify-center pt-[2px]"><FaTrash className='p-[2px] text-2xl rounded-full cursor-pointer' onClick={handleDel} /></td>
         </tr>
@@ -43,6 +43,7 @@ export default Student
 Student.propTypes = {
     stId: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
+    // data: PropTypes.number.isRequired,
     stBatch: PropTypes.string.isRequired,
     stSection: PropTypes.string.isRequired,
     stName: PropTypes.string.isRequired,

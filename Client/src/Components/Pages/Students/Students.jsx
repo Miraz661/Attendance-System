@@ -15,9 +15,9 @@ function Students() {
   const params = new URLSearchParams(search);
   const user = params.get('course');
   let target = user.split("CSEC");
-    target = target[0] + 'students';
+  target = target[0] + 'students';
   let home = user.split("batches");
-  home = home[0]+ '@uttarauniversity.edu.bd';
+  home = home[0] + '@uttarauniversity.edu.bd';
   let code = user.split('CSEC');
   const getSt = code[0];
   code = 'CSEC' + code[1];
@@ -29,12 +29,12 @@ function Students() {
   const [height, setHeight] = useState('100vh');
   const [stData, setStData] = useState([]);
   const [rerend, setRerend] = useState(0);
-  const [delId,setDelId] = useState();
+  const [delId, setDelId] = useState();
 
   useEffect(() => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
     const date = `${year}-${month}-${day}`;
     setToday(date);
@@ -101,16 +101,16 @@ function Students() {
 
   const handleDelConf = async () => {
     console.log(delId);
-    try{
-      const response = await axios.post(`http://localhost:3000/deleteStudent/${target}`, {delId,code});
+    try {
+      const response = await axios.post(`http://localhost:3000/deleteStudent/${target}`, { delId, code });
       console.log(response.message);
       setShowNewCourse(0);
-      if(rerend){
+      if (rerend) {
         setRerend(0);
-      }else{
+      } else {
         setRerend(1);
       }
-    }catch (error) {
+    } catch (error) {
       console.error('Error adding data:', error);
     }
     setShowDelConf(0)
@@ -120,19 +120,34 @@ function Students() {
     setShowDelConf(0);
   }
 
-  const upDateDelData = (data,id) => {
+  const upDateDelData = (data, id) => {
     setShowDelConf(data);
     setDelId(id);
   }
 
   const saveData = async () => {
     let data = attendanceData;
-    try{
-      const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, {data,code,today});
-      console.log(response.message);
-    }catch (error) {
-      console.error('Error adding data:', error);
+    if (Object.keys(data).length == 0) {
+      console.log("no data");
+    } else {
+      try {
+        const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, { data, code, today });
+        console.log(response.message);
+        setAttendanceData({});
+        if (rerend) {
+          setRerend(0);
+        } else {
+          setRerend(1);
+        }
+      } catch (error) {
+        console.error('Error adding data:', error);
+      }
     }
+  }
+
+  const handleView = () =>{
+    navigation(`/attendance?show=${target}code${code}`);
+    console.log(target,code);
   }
 
   const handleDateChange = (e) => {
@@ -225,7 +240,7 @@ function Students() {
         </table>
       </div>
       <div className="w-full flex justify-between px-4">
-        <button className="border-2 py-2 px-4 text-white rounded">View</button>
+        <button onClick={handleView} className="border-2 py-2 px-4 text-white rounded">View</button>
         <button onClick={saveData} className="border-2 py-2 px-4 text-white rounded">Save</button>
       </div>
       {
