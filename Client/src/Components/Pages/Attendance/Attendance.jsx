@@ -2,6 +2,8 @@ import { useLocation, Link } from "react-router-dom";
 import avater from '../../../assets/Images/avater.png';
 import { useEffect,useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import Attendancedata from "./Attendancedata";
+import axios from "axios";
 
 
 function Attendance() {
@@ -9,20 +11,27 @@ function Attendance() {
   const params = new URLSearchParams(search);
   const user = params.get('show');
   let home = user.split('batches');
-  home = home[0] + 'uttarauniversity.edu.bd';
+  home = home[0] + '@uttarauniversity.edu.bd';
   let code = user.split('code');
   code = code[1];
-  console.log(home);
+  console.log(user);
   const [account, setAccount] = useState(0);
   const navigation = useNavigate();
-  const [height, setHeight] = useState('100vh');
+  const [attData,setAttData] = useState([]);
 
 
-  useEffect(()=>{
-    const calculatedHeight = window.innerHeight - 191;
-    setHeight(calculatedHeight);
-  },[])
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code});
+        setAttData(response.data.result);
+        console.log(response.data.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [user,code])
 
   const handleLogOut = () => {
     setAccount(1);
@@ -33,12 +42,16 @@ function Attendance() {
     navigation('/');
   }
 
+  const showdata = () =>{
+    console.log(attData);
+  }
+
   return (
-    <div>
+    <div className="overflow-hidden">
       <div className='bg-[#181818] text-white flex justify-between align-items-center w-full py-4 md:px-10 sm:px-6 px-2'>
         <div className='text-3xl font-semibold'>
           <Link to={`/home?user=${home}`}>
-            <h1 className='cursor-pointer'>Students</h1>
+            <h1 className='cursor-pointer' onClick={showdata}>Students</h1>
           </Link>
         </div>
         <div className='text-2xl font-semibold sm:block hidden'>
@@ -60,7 +73,7 @@ function Attendance() {
           <input type="text" />
         </div>
       </div>
-      <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-scroll py-6 px-4 h-[${height}px] mb-4`}>
+      <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-hidden py-6 px-4 mb-4`}>
         <table className="text-white border-2 w-full border-collapse min-w-[500px]">
           <thead>
             <tr className="border-2">
@@ -72,11 +85,11 @@ function Attendance() {
             </tr>
           </thead>
           <tbody>
-            {/* {
-              stData.map(st => (
-                <Student key={st.Id} id={st.Id} stId={st.stId} stBatch={st.stBatch} stName={st.stName} stSection={st.stSection} upDateDel={upDateDelData} onDataUpdate={updateData} />
+            {
+              attData.map(data => (
+                <Attendancedata key={data.Id} date = {data.date} stId = {data.stId} name = {data.courseCode} attendance = {data.Attendance}/>
               ))
-            } */}
+            }
           </tbody>
         </table>
       </div>

@@ -104,6 +104,21 @@ app.post('/loadStudent/data', (req, res) => {
   })
 })
 
+app.post('/loadattendance/data', (req, res) => {
+  const { user } = req.body;
+  const { code } = req.body;
+  let getAtt = user.split("students");
+  getAtt = getAtt[0]+"attendance";
+  db.query(`SELECT * FROM ${getAtt} WHERE CourseCode = '${code}' ORDER BY stId ASC`, (err, results) => {
+    if (err) {
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.status(200).json({ result: results });
+    }
+  })
+})
+
+
 app.post('/addData/:user', (req, res) => {
   db.query(`Create table IF NOT EXISTS users(
     Id int primary key auto_increment,
@@ -234,7 +249,9 @@ app.post('/deleteStudent/:target', (req, res) => {
 });
 
 app.post('/deleteCourse/:user', (req, res) => {
-  const user = req.params.user;
+  const url = req.params.user;
+  let user = url.split("batches");
+  user = user[0] + 'courses' + user[1];
   const { code } = req.body;
   const sql = `DELETE FROM ${user} WHERE code = '${code}'`;
   db.query(sql, (err, result) => {
