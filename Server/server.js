@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
+
 const app = express();
 
 app.use(cors());
@@ -13,7 +14,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'ractdatabase',
+  database: 'reactdatabase',
 });
 
 db.connect((err) => {
