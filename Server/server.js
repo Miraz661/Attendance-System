@@ -108,7 +108,7 @@ app.post('/loadattendance/data', (req, res) => {
   const { user } = req.body;
   const { code } = req.body;
   let getAtt = user.split("students");
-  getAtt = getAtt[0]+"attendance";
+  getAtt = getAtt[0] + "attendance";
   db.query(`SELECT * FROM ${getAtt} WHERE CourseCode = '${code}' ORDER BY stId ASC`, (err, results) => {
     if (err) {
       res.status(500).send("Internal Server Error");
@@ -216,6 +216,41 @@ app.post('/addStudent/:target', (req, res) => {
       console.log(target);
     }
   });
+});
+
+
+app.post('/addAllStudent/:target/:code', (req, res) => {
+  const target = req.params.target;
+  const code = req.params.code;
+  let batchUrl = target.split("students");
+  batchUrl = batchUrl[0] + 'Attendance';
+  const updatedData = req.body;
+  db.query(`Create table IF NOT EXISTS ${batchUrl}(
+    Id int primary key auto_increment,
+      date varchar(50) not null,
+      stId varchar(50) not null,
+      courseCode varchar(50) not null,
+      Attendance varchar(50) not null
+  );`)
+  updatedData.forEach(async (row) => {
+    const id = row[1];
+    const name = row[2];
+    const batch = row[3];
+    const sec = row[4];
+    const sql = `INSERT INTO ${target} (Id,stId,stName,stBatch,stSection,stCourseCode) VALUES (?,?,?,?,?,?)`;
+    let Id = 'NULL';
+    db.query(sql, [Id, id, name, batch, sec, code], (err, result) => {
+      // if (err) {
+      //   console.error('Error executing MySQL query: ', err);
+      //   res.status(500).send("Error");
+      // } else {
+      //   res.json({ message: 'Batch added successfully', id: result.insertId, Error: '' })
+      //   console.log(target);
+      // }
+    });
+  });
+
+  res.send('Data updated successfully');
 });
 
 

@@ -6,6 +6,7 @@ import avater from '../../../assets/Images/avater.png';
 import axios from "axios";
 import Student from "./Student";
 import { Link } from "react-router-dom";
+import * as XLSX from 'xlsx';
 
 
 function Students() {
@@ -30,6 +31,7 @@ function Students() {
   const [stData, setStData] = useState([]);
   const [rerend, setRerend] = useState(0);
   const [delId, setDelId] = useState();
+  const [excelData, setExcelData] = useState(null);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -80,23 +82,40 @@ function Students() {
 
   const handleNewCourseAddition = async (e) => {
     e.preventDefault();
-    const id = e.target.id.value;
-    const name = e.target.name.value;
-    const batch = e.target.batch.value;
-    const section = e.target.section.value;
-    try {
-      const response = await axios.post(`http://localhost:3000/addStudent/${target}`, { id, name, batch, section, code });
-      console.log(response.message);
-      setShowNewCourse(0);
-      if (rerend) {
-        setRerend(0);
-      } else {
-        setRerend(1);
+    if (excelData) {
+      excelData.shift();
+      try {
+        await axios.post(`http://localhost:3000/addAllStudent/${target}/${code}`, excelData);
+        alert('Data updated successfully!');
+        setShowNewCourse(0);
+        if (rerend) {
+          setRerend(0);
+        } else {
+          setRerend(1);
+        }
+      } catch (error) {
+        console.error('Error updating data:', error);
       }
-    } catch (error) {
-      console.error('Error adding data:', error);
+      console.log(excelData);
+    } else {
+      const id = e.target.id.value;
+      const name = e.target.name.value;
+      const batch = e.target.batch.value;
+      const section = e.target.section.value;
+      try {
+        const response = await axios.post(`http://localhost:3000/addStudent/${target}`, { id, name, batch, section, code });
+        console.log(response.message);
+        setShowNewCourse(0);
+        if (rerend) {
+          setRerend(0);
+        } else {
+          setRerend(1);
+        }
+      } catch (error) {
+        console.error('Error adding data:', error);
+      }
+      setShowNewCourse(0);
     }
-    setShowNewCourse(0);
   }
 
   const handleDelConf = async () => {
@@ -125,6 +144,20 @@ function Students() {
     setDelId(id);
   }
 
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target.result;
+      const workbook = XLSX.read(result, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      setExcelData(data);
+    };
+    reader.readAsBinaryString(file);
+  };
+
   const saveData = async () => {
     let data = attendanceData;
     if (Object.keys(data).length == 0) {
@@ -145,9 +178,9 @@ function Students() {
     }
   }
 
-  const handleView = () =>{
+  const handleView = () => {
     navigation(`/attendance?show=${target}code${code}`);
-    console.log(target,code);
+    console.log(target, code);
   }
 
   const handleDateChange = (e) => {
@@ -178,19 +211,22 @@ function Students() {
                     <div className='flex flex-col max-w-60 self-center'>
                       <div className='pb-2'>
                         <label htmlFor="id" className='font-medium'>Id:</label>
-                        <input type="text" id='id' name="id" placeholder='Enter course code' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <input type="text" id='id' name="id" placeholder='Enter course code' className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
                         <label htmlFor="name" className='font-medium'>Name:</label>
-                        <input type="text" id='name' name="name" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <input type="text" id='name' name="name" placeholder='Enter course title' className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
                         <label htmlFor="batch" className='font-medium'>Batch No.:</label>
-                        <input type="text" id='batch' name="batch" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <input type="text" id='batch' name="batch" placeholder='Enter course title' className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
                         <label htmlFor="section" className='font-medium'>Section::</label>
-                        <input type="text" id='section' name="section" placeholder='Enter course title' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                        <input type="text" id='section' name="section" placeholder='Enter course title' className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
+                      </div>
+                      <div className="p-2 w-full flex align-items-center justify-center">
+                        <input type="file" accept=".csv,.xls,.xlsx" onChange={handleFileUpload} />
                       </div>
                       <button type='submit' className='border-2 rounded px-4 py-2 w-max hover:bg-[#7b7b7b] cursor-pointer'>Add Now</button>
                     </div>
