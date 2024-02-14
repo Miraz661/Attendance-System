@@ -211,7 +211,6 @@ function Students() {
                     <div className='flex flex-col max-w-60 self-center'>
                       <div className='pb-2'>
                         <label htmlFor="id" className='font-medium'>Id:</label>
-<<<<<<< HEAD
                         <input type="text" id='id' name="id" placeholder='Enter course code' className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
                       </div>
                       <div className='pb-2'>
@@ -228,21 +227,6 @@ function Students() {
                       </div>
                       <div className="p-2 w-full flex align-items-center justify-center">
                         <input type="file" accept=".csv,.xls,.xlsx" onChange={handleFileUpload} />
-=======
-                        <input type="text" id='id' name="id" placeholder='Enter student ID' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
-                      </div>
-                      <div className='pb-2'>
-                        <label htmlFor="name" className='font-medium'>Name:</label>
-                        <input type="text" id='name' name="name" placeholder='Enter student name' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
-                      </div>
-                      <div className='pb-2'>
-                        <label htmlFor="batch" className='font-medium'>Batch No:</label>
-                        <input type="text" id='batch' name="batch" placeholder='Enter batch no`' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
-                      </div>
-                      <div className='pb-2'>
-                        <label htmlFor="section" className='font-medium'>Section:</label>
-                        <input type="text" id='section' name="section" placeholder='Enter section' required className='w-full p-2 bg-[#0000009c] border-[2px] rounded outline-none focus:border-[#4f8dff]' />
->>>>>>> c7f9a8e4b7bdc7d989e69d5713457b6af71ef340
                       </div>
                       <button type='submit' className='border-2 rounded px-4 py-2 w-max hover:bg-[#7b7b7b] cursor-pointer'>Add Now</button>
                     </div>

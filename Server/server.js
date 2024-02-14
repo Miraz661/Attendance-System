@@ -14,7 +14,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'reactdatabase',
+  database: 'ractdatabase',
 });
 
 db.connect((err) => {
