@@ -18,12 +18,32 @@ function Attendance() {
   const [account, setAccount] = useState(0);
   const navigation = useNavigate();
   const [attData,setAttData] = useState([]);
+  const [Today,setToday] = useState();
+  const [LastDate, setLastDate] = useState();
+
+  useEffect(()=>{
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const date = `${year}-${month}-${day}`;
+    setToday(date);
+    var last = new Date();
+    last.setDate(currentDate.getDate() - 7);
+    last = last.toLocaleDateString();
+    const dateRange = last.split('/');
+    const d = dateRange[0].padStart(2,'0');
+    const m = dateRange[1].padStart(2,'0');
+    const y = dateRange[2];
+    last = `${y}-${m}-${d}`;
+    setLastDate(last);
+  },[])
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code});
+        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code,Today,LastDate});
         setAttData(response.data.result);
         console.log(response.data.result);
       } catch (error) {
@@ -31,7 +51,9 @@ function Attendance() {
       }
     };
     fetchData();
-  }, [user,code])
+  }, [user,code,Today,LastDate])
+
+  console.log("last date : " +Today);
 
   const handleLogOut = () => {
     setAccount(1);
@@ -68,7 +90,15 @@ function Attendance() {
         </div>
       </div>
       <div className="w-full flex justify-between text-white pt-4 px-4">
-        <div className="font-semibold text-xl">Software Engineering</div>
+        <div className="font-semibold text-xl flex gap-2">
+          <div>Title : Software Eng.</div>
+          <div>
+            <form className="flex gap-4 text-black">
+              <input type="date" value={Today}/>
+              <input type="date" value={LastDate}/>
+            </form>
+          </div>
+        </div>
         <div>
           <input type="text" />
         </div>
