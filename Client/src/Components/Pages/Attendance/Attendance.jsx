@@ -122,7 +122,7 @@ function Attendance() {
         </div>
       </div>
       <div className="w-full flex justify-between text-white pt-4 px-4">
-        <div className="font-semibold text-xl flex gap-2">
+        <div className="font-semibold text-xl flex justify-between w-full">
           <div>Title : Software Eng.</div>
           {/* <div>
             <form className="flex gap-4 text-black">
@@ -134,9 +134,9 @@ function Attendance() {
             <button className="border-2 px-4 py-2 rounded active:bg-white active:text-black" onClick={handleDownload}>Download</button>
           </div>
         </div>
-        <div>
+        {/* <div>
           <input type="text" />
-        </div>
+        </div> */}
       </div>
       <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-hidden py-6 px-4 mb-4`}>
         <table className="text-white border-2 w-full border-collapse min-w-[500px]">
