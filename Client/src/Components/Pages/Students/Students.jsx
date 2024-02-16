@@ -160,6 +160,7 @@ function Students() {
 
   const saveData = async () => {
     let data = attendanceData;
+    console.log(data);
     if (Object.keys(data).length == 0) {
       // console.log("no data");
     } else {
@@ -167,6 +168,7 @@ function Students() {
         const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, { data, code, today });
         // console.log(response.message);
         setAttendanceData({});
+        alert('Attendance Save Successfully!');
         if (rerend) {
           setRerend(0);
         } else {

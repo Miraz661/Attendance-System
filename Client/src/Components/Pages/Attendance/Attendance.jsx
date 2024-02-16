@@ -143,7 +143,6 @@ function Attendance() {
           <thead>
             <tr className="border-2">
               <th className="border-2">Date</th>
-              <th className="border-2">Name</th>
               <th className="border-2">ID</th>
               <th className="border-2">Attendance</th>
               <th className="border-2">Action</th>
@@ -152,7 +151,7 @@ function Attendance() {
           <tbody>
             {
               attData.map(data => (
-                <Attendancedata key={data[0]} date = {data[1]} stId = {data[2]} name = {data[3]} attendance = {data[4]}/>
+                <Attendancedata key={data[0]} date = {data[1]} stId = {data[2]} attendance = {data[4]}/>
               ))
             }
           </tbody>

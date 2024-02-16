@@ -2,12 +2,11 @@ import PropTypes from 'prop-types';
 import { FaTrash } from 'react-icons/fa';
 
 function Attendancedata(props) {
-    const { date, stId, name, attendance } = props;
+    const { date, stId, attendance } = props;
     // console.log(date);
     return (
         <tr>
             <td className="border-2 text-center">{date}</td>
-            <td className="border-2 text-center">{name}</td>
             <td className="border-2 text-center">{stId}</td>
             <td className="border-2 text-center">{attendance}</td>
             <td className="border-2 text-center">
