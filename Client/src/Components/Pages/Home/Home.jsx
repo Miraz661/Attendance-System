@@ -12,7 +12,7 @@ function Home() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const user = params.get('user');
-  console.log(user);
+  // console.log(user);
   let userReq = user.split("@");
   userReq = userReq[0]+'batches';
   const navigation = useNavigate();
@@ -28,7 +28,7 @@ function Home() {
       try {
         const response = await axios.post('http://localhost:3000/loadbatch/data',{userReq});
         setBatchData(response.data.result);
-        console.log(response.data.result);
+        // console.log(response.data.result);
       } catch (error) {
         console.error(error);
       }
@@ -54,11 +54,11 @@ function Home() {
     const batch = e.target.batch.value;
     const sec = e.target.sec.value;
     const num = Math.floor(Math.random() * 10) +1;
-    console.log(num);
+    // console.log(num);
     const img = `/src/assets/Images/batchBg${num}.jpg`;
     try{
       const response = await axios.post(`http://localhost:3000/addBatches/${userReq}`, {batch,sec,img});
-      console.log(response.message);
+      // console.log(response.message);
       setShowNewBatch(0);
       if(rerend){
         setRerend(0);
@@ -74,7 +74,7 @@ function Home() {
     const batch = e.currentTarget.querySelector('h1').innerText;
     const sec = e.currentTarget.querySelector('h3').innerText;
     let batchSec = userReq+batch+sec;
-    console.log(batchSec);
+    // console.log(batchSec);
     navigation(`/course?batch=${batchSec}`);
   }
 

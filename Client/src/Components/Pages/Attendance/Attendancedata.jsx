@@ -3,7 +3,7 @@ import { FaTrash } from 'react-icons/fa';
 
 function Attendancedata(props) {
     const { date, stId, name, attendance } = props;
-    console.log(date);
+    // console.log(date);
     return (
         <tr>
             <td className="border-2 text-center">{date}</td>
@@ -12,7 +12,7 @@ function Attendancedata(props) {
             <td className="border-2 text-center">{attendance}</td>
             <td className="border-2 text-center">
                 <div className='flex justify-center'>
-                    <span className='mr-4 cursor-pointer'>UpDate</span>
+                    {/* <span className='mr-4 cursor-pointer'>UpDate</span> */}
                     <FaTrash className='cursor-pointer'/>
                 </div>
             </td>

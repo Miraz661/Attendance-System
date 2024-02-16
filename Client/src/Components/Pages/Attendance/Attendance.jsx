@@ -4,6 +4,7 @@ import { useEffect,useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Attendancedata from "./Attendancedata";
 import axios from "axios";
+import * as XLSX from 'xlsx';
 
 
 function Attendance() {
@@ -14,20 +15,20 @@ function Attendance() {
   home = home[0] + '@uttarauniversity.edu.bd';
   let code = user.split('code');
   code = code[1];
-  console.log(user);
+  // console.log(user);
   const [account, setAccount] = useState(0);
   const navigation = useNavigate();
   const [attData,setAttData] = useState([]);
-  const [Today,setToday] = useState();
+  // const [Today,setToday] = useState();
   // const [LastDate, setLastDate] = useState();
 
   useEffect(()=>{
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const date = `${year}-${month}-${day}`;
-    setToday(date);
+    // const currentDate = new Date();
+    // const year = currentDate.getFullYear();
+    // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    // const day = String(currentDate.getDate()).padStart(2, '0');
+    // const date = `${year}-${month}-${day}`;
+    // setToday(date);
     // var last = new Date();
     // last.setDate(currentDate.getDate() - 7);
     // last = last.toLocaleDateString();
@@ -44,16 +45,18 @@ function Attendance() {
     const fetchData = async () => {
       try {
         const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code});
-        setAttData(response.data.result);
-        console.log(response.data.result);
+        const dataObject = response.data.result;
+        const arrayFromObject = Object.values(dataObject).map(innerObj => Object.values(innerObj));
+        setAttData(arrayFromObject);
+        // console.log(typeof(arrayFromObject));
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
     fetchData();
   }, [user,code])
 
-  console.log("last date : " +Today);
+  // console.log(attData);
 
   const handleLogOut = () => {
     setAccount(1);
@@ -65,8 +68,37 @@ function Attendance() {
   }
 
   const showdata = () =>{
-    console.log(attData);
+    // console.log(attData);
   }
+
+  const generateExcelData = () => {
+    const data = [...attData];
+    data.unshift(Array(attData[0].length).fill(null));
+    data[0][0]='SL';
+    data[0][1]='Date';
+    data[0][2] = 'ID';
+    data[0][3] = 'Name';
+    data[0][4] = 'Attendance';
+    // console.log(data);
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    return blob;
+  };
+
+  const handleDownload = () => {
+    const excelData = generateExcelData();
+    const url = window.URL.createObjectURL(excelData);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'data.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="overflow-hidden">
@@ -99,7 +131,7 @@ function Attendance() {
             </form>
           </div> */}
           <div>
-            <button className="border-2 px-4 py-2 rounded active:bg-white active:text-black">Download</button>
+            <button className="border-2 px-4 py-2 rounded active:bg-white active:text-black" onClick={handleDownload}>Download</button>
           </div>
         </div>
         <div>
@@ -120,7 +152,7 @@ function Attendance() {
           <tbody>
             {
               attData.map(data => (
-                <Attendancedata key={data.Id} date = {data.date} stId = {data.stId} name = {data.courseCode} attendance = {data.Attendance}/>
+                <Attendancedata key={data[0]} date = {data[1]} stId = {data[2]} name = {data[3]} attendance = {data[4]}/>
               ))
             }
           </tbody>

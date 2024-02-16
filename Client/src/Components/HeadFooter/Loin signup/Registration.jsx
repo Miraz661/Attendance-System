@@ -95,7 +95,7 @@ function Registration() {
 
         try {
           const response = await axios.post('http://localhost:3000/createUser/table',{userId});
-          console.log(response.data);
+          // console.log(response.data);
         } catch (error) {
           console.error(error);
         }
@@ -106,7 +106,7 @@ function Registration() {
         console.error('Error adding data:', error);
       }
     } else {
-      console.log("Invalid code..."+e.target.code.value);
+      // console.log("Invalid code..."+e.target.code.value);
     }
   }
 
@@ -121,7 +121,7 @@ function Registration() {
       });
 
       // Handle successful authentication (e.g., store tokens, redirect)
-      console.log('Authentication successful', response.data);
+      // console.log('Authentication successful', response.data);
       navigate(`/home?user=${response.data.email}`);
     } catch (error) {
       // Handle authentication failure (e.g., show error message)

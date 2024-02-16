@@ -77,7 +77,7 @@ function Students() {
 
   const updateData = (key, value) => {
     setAttendanceData({ ...attendanceData, [key]: value })
-    console.log(attendanceData);
+    // console.log(attendanceData);
   };
 
   const handleNewCourseAddition = async (e) => {
@@ -96,7 +96,7 @@ function Students() {
       } catch (error) {
         console.error('Error updating data:', error);
       }
-      console.log(excelData);
+      // console.log(excelData);
     } else {
       const id = e.target.id.value;
       const name = e.target.name.value;
@@ -104,7 +104,7 @@ function Students() {
       const section = e.target.section.value;
       try {
         const response = await axios.post(`http://localhost:3000/addStudent/${target}`, { id, name, batch, section, code });
-        console.log(response.message);
+        // console.log(response.message);
         setShowNewCourse(0);
         if (rerend) {
           setRerend(0);
@@ -119,10 +119,10 @@ function Students() {
   }
 
   const handleDelConf = async () => {
-    console.log(delId);
+    // console.log(delId);
     try {
       const response = await axios.post(`http://localhost:3000/deleteStudent/${target}`, { delId, code });
-      console.log(response.message);
+      // console.log(response.message);
       setShowNewCourse(0);
       if (rerend) {
         setRerend(0);
@@ -161,11 +161,11 @@ function Students() {
   const saveData = async () => {
     let data = attendanceData;
     if (Object.keys(data).length == 0) {
-      console.log("no data");
+      // console.log("no data");
     } else {
       try {
         const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, { data, code, today });
-        console.log(response.message);
+        // console.log(response.message);
         setAttendanceData({});
         if (rerend) {
           setRerend(0);
@@ -180,7 +180,7 @@ function Students() {
 
   const handleView = () => {
     navigation(`/attendance?show=${target}code${code}`);
-    console.log(target, code);
+    // console.log(target, code);
   }
 
   const handleDateChange = (e) => {

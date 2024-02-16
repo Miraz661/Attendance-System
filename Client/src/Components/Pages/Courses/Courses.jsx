@@ -16,7 +16,7 @@ function Courses() {
   let batchSec = user.split('batches');
   let home = batchSec[0]+ '@uttarauniversity.edu.bd';
   batchSec = batchSec[1];
-  console.log("User:" + user)
+  // console.log("User:" + user)
   const [account, setAccount] = useState(0);
   const [showNewCourse, setShowNewCourse] = useState(0);
   const navigation = useNavigate();
@@ -35,12 +35,12 @@ function Courses() {
   }, [batchSec])
 
   useEffect(() => {
-    console.log("User call" + user);
+    // console.log("User call" + user);
     const fetchData = async () => {
       try {
         const response = await axios.post('http://localhost:3000/loadcourse/data', { user });
         setCourseData(response.data.result);
-        console.log(response.data.result);
+        // console.log(response.data.result);
       } catch (error) {
         console.error(error);
       }
@@ -81,7 +81,7 @@ function Courses() {
   const handleDelConf = async () => {
     try {
       const response = await axios.post(`http://localhost:3000/deleteCourse/${user}`, { code: delData });
-      console.log(response.message);
+      // console.log(response.message);
       setShowNewCourse(0);
       if (rerend) {
         setRerend(0);
@@ -104,10 +104,10 @@ function Courses() {
     const title = e.target.title.value;
     const num = Math.floor(Math.random() * 10) + 1;
     const img = `/src/assets/Images/batchBg${num}.jpg`;
-    console.log(code, title);
+    // console.log(code, title);
     try {
       const response = await axios.post(`http://localhost:3000/addCourse/${user}`, { code, title, img });
-      console.log(response.message);
+      // console.log(response.message);
       setShowNewCourse(0);
       if (rerend) {
         setRerend(0);
