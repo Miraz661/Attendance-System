@@ -108,12 +108,13 @@ app.post('/loadStudent/data', (req, res) => {
 app.post('/loadattendance/data', (req, res) => {
   const { user } = req.body;
   const { code } = req.body;
-  const { Today } = req.body;
-  const { LastDate } = req.body;
+  // const { Today } = req.body;
+  // const { LastDate } = req.body;
   let getAtt = user.split("students");
   getAtt = getAtt[0] + "attendance";
-  const q = `SELECT * FROM ${getAtt} WHERE CourseCode = '${code}' AND STR_TO_DATE(date, '%Y-%m-%d') BETWEEN ${LastDate} AND ${Today} ORDER BY stId ASC`;
-  console.log( q);
+  const q = `SELECT * FROM ${getAtt} WHERE CourseCode = '${code}' ORDER BY stId ASC`;
+  // AND STR_TO_DATE(date, '%Y-%m-%d') BETWEEN ${LastDate} AND ${Today} 
+  // console.log( q);
   db.query( q, (err, results) => {
     if (err) {
       res.status(500).send("Internal Server Error");

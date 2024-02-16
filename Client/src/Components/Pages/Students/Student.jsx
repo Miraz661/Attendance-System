@@ -8,12 +8,12 @@ function Student(props) {
 
     const present = () => {
         setAttendance(1);
-        onDataUpdate(stId, 'Present');
+        onDataUpdate(stId, 'P');
     }
 
     const absent = () => {
         setAttendance(2);
-        onDataUpdate(stId, 'Absent');
+        onDataUpdate(stId, 'A');
     }
 
     const handleDel = () => {

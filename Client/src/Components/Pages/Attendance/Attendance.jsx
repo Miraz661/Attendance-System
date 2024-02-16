@@ -19,7 +19,7 @@ function Attendance() {
   const navigation = useNavigate();
   const [attData,setAttData] = useState([]);
   const [Today,setToday] = useState();
-  const [LastDate, setLastDate] = useState();
+  // const [LastDate, setLastDate] = useState();
 
   useEffect(()=>{
     const currentDate = new Date();
@@ -28,22 +28,22 @@ function Attendance() {
     const day = String(currentDate.getDate()).padStart(2, '0');
     const date = `${year}-${month}-${day}`;
     setToday(date);
-    var last = new Date();
-    last.setDate(currentDate.getDate() - 7);
-    last = last.toLocaleDateString();
-    const dateRange = last.split('/');
-    const d = dateRange[0].padStart(2,'0');
-    const m = dateRange[1].padStart(2,'0');
-    const y = dateRange[2];
-    last = `${y}-${m}-${d}`;
-    setLastDate(last);
+    // var last = new Date();
+    // last.setDate(currentDate.getDate() - 7);
+    // last = last.toLocaleDateString();
+    // const dateRange = last.split('/');
+    // const d = dateRange[0].padStart(2,'0');
+    // const m = dateRange[1].padStart(2,'0');
+    // const y = dateRange[2];
+    // last = `${y}-${m}-${d}`;
+    // setLastDate(last);
   },[])
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code,Today,LastDate});
+        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code});
         setAttData(response.data.result);
         console.log(response.data.result);
       } catch (error) {
@@ -51,7 +51,7 @@ function Attendance() {
       }
     };
     fetchData();
-  }, [user,code,Today,LastDate])
+  }, [user,code])
 
   console.log("last date : " +Today);
 
@@ -92,11 +92,14 @@ function Attendance() {
       <div className="w-full flex justify-between text-white pt-4 px-4">
         <div className="font-semibold text-xl flex gap-2">
           <div>Title : Software Eng.</div>
-          <div>
+          {/* <div>
             <form className="flex gap-4 text-black">
               <input type="date" value={Today}/>
               <input type="date" value={LastDate}/>
             </form>
+          </div> */}
+          <div>
+            <button className="border-2 px-4 py-2 rounded active:bg-white active:text-black">Download</button>
           </div>
         </div>
         <div>
