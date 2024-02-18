@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import avater from '../../../assets/Images/avater.png';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Attendancedata from "./Attendancedata";
 import axios from "axios";
@@ -18,11 +18,15 @@ function Attendance() {
   // console.log(user);
   const [account, setAccount] = useState(0);
   const navigation = useNavigate();
-  const [attData,setAttData] = useState([]);
+  const [attData, setAttData] = useState([]);
   // const [Today,setToday] = useState();
   // const [LastDate, setLastDate] = useState();
+  const [delId, setDelId] = useState(null);
+  const [delDate, setDelDate] = useState(null);
+  const [showDelConf, setShowDelConf] = useState(0);
+  const [rerend, setRerend] = useState(0);
 
-  useEffect(()=>{
+  useEffect(() => {
     // const currentDate = new Date();
     // const year = currentDate.getFullYear();
     // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -38,13 +42,13 @@ function Attendance() {
     // const y = dateRange[2];
     // last = `${y}-${m}-${d}`;
     // setLastDate(last);
-  },[])
+  }, [])
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:3000/loadattendance/data',{user,code});
+        const response = await axios.post('http://localhost:3000/loadattendance/data', { user, code });
         const dataObject = response.data.result;
         const arrayFromObject = Object.values(dataObject).map(innerObj => Object.values(innerObj));
         setAttData(arrayFromObject);
@@ -54,7 +58,7 @@ function Attendance() {
       }
     };
     fetchData();
-  }, [user,code])
+  }, [user, code, rerend])
 
   // console.log(attData);
 
@@ -67,15 +71,15 @@ function Attendance() {
     navigation('/');
   }
 
-  const showdata = () =>{
+  const showdata = () => {
     // console.log(attData);
   }
 
   const generateExcelData = () => {
     const data = [...attData];
     data.unshift(Array(attData[0].length).fill(null));
-    data[0][0]='SL';
-    data[0][1]='Date';
+    data[0][0] = 'SL';
+    data[0][1] = 'Date';
     data[0][2] = 'ID';
     data[0][3] = 'Name';
     data[0][4] = 'Attendance';
@@ -99,6 +103,36 @@ function Attendance() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const setDelData = (data, id, date) => {
+    setDelId(id);
+    setDelDate(date);
+    setShowDelConf(data);
+  }
+
+  const handleDelConf = async() =>{
+    const target = '2211081038batches53battendance';
+    try {
+      const response = await axios.post(`http://localhost:3000/deleteAttendance/${target}`, { delId, code,delDate });
+      // console.log(response.message);
+      if (rerend) {
+        setRerend(0);
+      } else {
+        setRerend(1);
+      }
+    } catch (error) {
+      console.error('Error adding data:', error);
+    }
+    setShowDelConf(0);
+    setDelId(null);
+    setDelDate(null);
+  }
+
+  const handleDelCancel = () =>{
+    setShowDelConf(0);
+    setDelId(null);
+    setDelDate(null);
+  }
 
   return (
     <div className="overflow-hidden">
@@ -145,18 +179,35 @@ function Attendance() {
               <th className="border-2">Date</th>
               <th className="border-2">ID</th>
               <th className="border-2">Attendance</th>
-              <th className="border-2">Action</th>
+              <th className="border-2"></th>
             </tr>
           </thead>
           <tbody>
             {
               attData.map(data => (
-                <Attendancedata key={data[0]} date = {data[1]} stId = {data[2]} attendance = {data[4]}/>
+                <Attendancedata key={data[0]} date={data[1]} stId={data[2]} attendance={data[4]} del={setDelData} />
               ))
             }
           </tbody>
         </table>
       </div>
+      {
+        showDelConf ?
+          <div className='absolute z-[3] top-0 left-0 w-screen h-screen bg-[#000000de] flex justify-center items-center'>
+            <div className='border-2 rounded py-3 px-5 text-white bg-black'>
+              <div className='pb-4'>
+                <h1 className='text-3xl text-center'>Are you sure?</h1>
+                <h2 className='text-sm text-center'>wants to delete : {delId}</h2>
+              </div>
+              <div className='flex justify-between'>
+                <div className='px-2 py-1 border-2 rounded cursor-pointer' onClick={handleDelConf}>Confirm</div>
+                <div className='px-2 py-1 border-2 rounded cursor-pointer' onClick={handleDelCancel}>Cancel</div>
+              </div>
+            </div>
+          </div>
+          :
+          ''
+      }
     </div>
   )
 }

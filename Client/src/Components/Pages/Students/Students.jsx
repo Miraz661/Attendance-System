@@ -162,7 +162,6 @@ function Students() {
 
   const saveData = async () => {
     let data = attendanceData;
-    console.log(data);
     if (Object.keys(data).length == 0 || today == '') {
       console.log("no data");
     } else {
@@ -289,7 +288,7 @@ function Students() {
             <div className='border-2 rounded py-3 px-5 text-white bg-black'>
               <div className='pb-4'>
                 <h1 className='text-3xl text-center'>Are you sure?</h1>
-                <h2 className='text-sm text-center'>wants to delete : 2211081038</h2>
+                <h2 className='text-sm text-center'>wants to delete : {delId}</h2>
               </div>
               <div className='flex justify-between'>
                 <div className='px-2 py-1 border-2 rounded cursor-pointer' onClick={handleDelConf}>Confirm</div>

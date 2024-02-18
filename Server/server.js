@@ -291,6 +291,21 @@ app.post('/deleteStudent/:target', (req, res) => {
   });
 });
 
+
+app.post('/deleteAttendance/:target', (req, res) => {
+  const target = req.params.target;
+  const { delId, delDate, code } = req.body;
+  const sql = `DELETE FROM ${target} WHERE stId = ${delId} AND CourseCode = '${code}'  AND date = '${delDate}'`;
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error executing MySQL query: ', err);
+      res.status(500).send("Error");
+    } else {
+      res.json({ message: 'Batch delete successfully', Error: '' });
+    }
+  });
+});
+
 app.post('/deleteCourse/:user', (req, res) => {
   const url = req.params.user;
   let user = url.split("batches");
