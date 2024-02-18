@@ -49,7 +49,6 @@ app.post('/auth', (req, res) => {
 
 app.post('/createUser/table', (req, res) => {
   const { userId } = req.body;
-  console.log(userId);
   db.query(`Create table IF NOT EXISTS ${userId}(
     Id int primary key auto_increment,
       batch int not null,
@@ -80,7 +79,6 @@ app.post('/loadbatch/data', (req, res) => {
 app.post('/loadcourse/data', (req, res) => {
   const { user } = req.body;
   let batchUrl = user + 'courses';
-  console.log(user);
   db.query(`SELECT * FROM ${batchUrl} ORDER BY code ASC`, (err, results) => {
     if (err) {
       res.status(500).send("Internal Server Error");
@@ -126,7 +124,6 @@ app.post('/loadattendance/data', (req, res) => {
 app.post('/getTitle/data',(req, res) => {
   const { link, code } = req.body;
   const q = `select title from ${link} where code = '${code}'`;
-  console.log(q);
   db.query(q, (err, results) =>{
     if(err){
       res.status(500).send("Internal Server Error");
@@ -216,7 +213,7 @@ app.post('/addStudent/:target', (req, res) => {
   const { id, name, batch, section, code } = req.body;
   let batchUrl = target.split("students");
   batchUrl = batchUrl[0] + 'Attendance';
-  console.log(section);
+  // console.log(section);
   db.query(`Create table IF NOT EXISTS ${batchUrl}(
     Id int primary key auto_increment,
       date varchar(50) not null,
@@ -232,7 +229,7 @@ app.post('/addStudent/:target', (req, res) => {
       res.status(500).send("Error");
     } else {
       res.json({ message: 'Batch added successfully', id: result.insertId, Error: '' })
-      console.log(target);
+      // console.log(target);
     }
   });
 });
