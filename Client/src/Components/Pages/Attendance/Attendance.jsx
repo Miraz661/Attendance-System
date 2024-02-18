@@ -15,7 +15,10 @@ function Attendance() {
   home = home[0] + '@uttarauniversity.edu.bd';
   let code = user.split('code');
   code = code[1];
-  // console.log(user);
+  let head = user.split('students');
+  head = head[0];
+  let target = head + 'attendance';
+  // console.log(target);
   const [account, setAccount] = useState(0);
   const navigation = useNavigate();
   const [attData, setAttData] = useState([]);
@@ -25,24 +28,38 @@ function Attendance() {
   const [delDate, setDelDate] = useState(null);
   const [showDelConf, setShowDelConf] = useState(0);
   const [rerend, setRerend] = useState(0);
+  const [title, setTitle] = useState('');
 
-  useEffect(() => {
-    // const currentDate = new Date();
-    // const year = currentDate.getFullYear();
-    // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    // const day = String(currentDate.getDate()).padStart(2, '0');
-    // const date = `${year}-${month}-${day}`;
-    // setToday(date);
-    // var last = new Date();
-    // last.setDate(currentDate.getDate() - 7);
-    // last = last.toLocaleDateString();
-    // const dateRange = last.split('/');
-    // const d = dateRange[0].padStart(2,'0');
-    // const m = dateRange[1].padStart(2,'0');
-    // const y = dateRange[2];
-    // last = `${y}-${m}-${d}`;
-    // setLastDate(last);
-  }, [])
+  // useEffect(() => {
+  //   // const currentDate = new Date();
+  //   // const year = currentDate.getFullYear();
+  //   // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+  //   // const day = String(currentDate.getDate()).padStart(2, '0');
+  //   // const date = `${year}-${month}-${day}`;
+  //   // setToday(date);
+  //   // var last = new Date();
+  //   // last.setDate(currentDate.getDate() - 7);
+  //   // last = last.toLocaleDateString();
+  //   // const dateRange = last.split('/');
+  //   // const d = dateRange[0].padStart(2,'0');
+  //   // const m = dateRange[1].padStart(2,'0');
+  //   // const y = dateRange[2];
+  //   // last = `${y}-${m}-${d}`;
+  //   // setLastDate(last);
+  //   let link = head + 'courses';
+  //   const fetchTitle = async () => {
+  //     try {
+  //       const response = await axios.post('http://localhost:3000/getTitle/data', { link, code });
+  //       const dataObject = response.data.result;
+  //       const arrayFromObject = Object.values(dataObject).map(innerObj => Object.values(innerObj));
+  //       setAttData(arrayFromObject);
+  //       // console.log(typeof(arrayFromObject));
+  //     } catch (error) {
+  //       // console.error(error);
+  //     }
+  //   };
+  //   fetchTitle();
+  // }, [head,code])
 
 
   useEffect(() => {
@@ -111,7 +128,6 @@ function Attendance() {
   }
 
   const handleDelConf = async() =>{
-    const target = '2211081038batches53battendance';
     try {
       const response = await axios.post(`http://localhost:3000/deleteAttendance/${target}`, { delId, code,delDate });
       // console.log(response.message);

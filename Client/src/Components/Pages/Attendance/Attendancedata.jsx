@@ -29,7 +29,6 @@ export default Attendancedata;
 Attendancedata.propTypes = {
     date: PropTypes.string.isRequired,
     stId: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
     attendance: PropTypes.string.isRequired,
     del: PropTypes.func.isRequired
 };

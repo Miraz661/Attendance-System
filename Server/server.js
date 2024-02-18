@@ -79,8 +79,7 @@ app.post('/loadbatch/data', (req, res) => {
 
 app.post('/loadcourse/data', (req, res) => {
   const { user } = req.body;
-  let batchUrl = user.split('batches');
-  batchUrl = batchUrl[0] + 'courses' + batchUrl[1];
+  let batchUrl = user + 'courses';
   console.log(user);
   db.query(`SELECT * FROM ${batchUrl} ORDER BY code ASC`, (err, results) => {
     if (err) {
@@ -150,8 +149,8 @@ app.post('/addData/:user', (req, res) => {
 app.post('/addBatches/:userReq', (req, res) => {
   const userReq = req.params.userReq;
   const { batch, sec, img } = req.body;
-  let batchUrl = userReq.split('batches');
-  batchUrl = batchUrl[0] + 'courses' + batch + sec;
+  let batchUrl = userReq;
+  batchUrl = batchUrl +  batch + sec + 'courses';
   db.query(`Create table IF NOT EXISTS ${batchUrl}(
     Id int primary key auto_increment,
       code varchar(50) not null,
@@ -174,8 +173,8 @@ app.post('/addBatches/:userReq', (req, res) => {
 app.post('/addCourse/:user', (req, res) => {
   const user = req.params.user;
   const { code, title, img } = req.body;
-  let batchUrl = user.split('batches');
-  batchUrl = batchUrl[0] + 'courses' + batchUrl[1];
+  // console.log(user);
+  let batchUrl = user + 'courses';
   let students = user + "students";
   db.query(`Create table IF NOT EXISTS ${students}(
     Id int primary key auto_increment,
