@@ -123,6 +123,19 @@ app.post('/loadattendance/data', (req, res) => {
   })
 })
 
+app.post('/getTitle/data',(req, res) => {
+  const { link, code } = req.body;
+  const q = `select title from ${link} where code = '${code}'`;
+  console.log(q);
+  db.query(q, (err, results) =>{
+    if(err){
+      res.status(500).send("Internal Server Error");
+    }else{
+      res.status(200).json({result: results});
+    }
+  })
+})
+
 
 app.post('/addData/:user', (req, res) => {
   db.query(`Create table IF NOT EXISTS users(

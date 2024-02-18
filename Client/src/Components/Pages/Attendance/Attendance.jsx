@@ -30,36 +30,35 @@ function Attendance() {
   const [rerend, setRerend] = useState(0);
   const [title, setTitle] = useState('');
 
-  // useEffect(() => {
-  //   // const currentDate = new Date();
-  //   // const year = currentDate.getFullYear();
-  //   // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-  //   // const day = String(currentDate.getDate()).padStart(2, '0');
-  //   // const date = `${year}-${month}-${day}`;
-  //   // setToday(date);
-  //   // var last = new Date();
-  //   // last.setDate(currentDate.getDate() - 7);
-  //   // last = last.toLocaleDateString();
-  //   // const dateRange = last.split('/');
-  //   // const d = dateRange[0].padStart(2,'0');
-  //   // const m = dateRange[1].padStart(2,'0');
-  //   // const y = dateRange[2];
-  //   // last = `${y}-${m}-${d}`;
-  //   // setLastDate(last);
-  //   let link = head + 'courses';
-  //   const fetchTitle = async () => {
-  //     try {
-  //       const response = await axios.post('http://localhost:3000/getTitle/data', { link, code });
-  //       const dataObject = response.data.result;
-  //       const arrayFromObject = Object.values(dataObject).map(innerObj => Object.values(innerObj));
-  //       setAttData(arrayFromObject);
-  //       // console.log(typeof(arrayFromObject));
-  //     } catch (error) {
-  //       // console.error(error);
-  //     }
-  //   };
-  //   fetchTitle();
-  // }, [head,code])
+  useEffect(() => {
+    // const currentDate = new Date();
+    // const year = currentDate.getFullYear();
+    // const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    // const day = String(currentDate.getDate()).padStart(2, '0');
+    // const date = `${year}-${month}-${day}`;
+    // setToday(date);
+    // var last = new Date();
+    // last.setDate(currentDate.getDate() - 7);
+    // last = last.toLocaleDateString();
+    // const dateRange = last.split('/');
+    // const d = dateRange[0].padStart(2,'0');
+    // const m = dateRange[1].padStart(2,'0');
+    // const y = dateRange[2];
+    // last = `${y}-${m}-${d}`;
+    // setLastDate(last);
+    let link = head + 'courses';
+    const fetchTitle = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/getTitle/data', { link, code });
+        const result = response.data.result;
+        setTitle(result[0].title);
+        // console.log(result[0].title);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTitle();
+  }, [head,code])
 
 
   useEffect(() => {
@@ -173,7 +172,7 @@ function Attendance() {
       </div>
       <div className="w-full flex justify-between text-white pt-4 px-4">
         <div className="font-semibold text-xl flex justify-between w-full">
-          <div>Title : Software Eng.</div>
+          <div>Title : {title}</div>
           {/* <div>
             <form className="flex gap-4 text-black">
               <input type="date" value={Today}/>

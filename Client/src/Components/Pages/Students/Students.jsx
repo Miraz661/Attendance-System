@@ -15,8 +15,9 @@ function Students() {
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const user = params.get('course');
-  let target = user.split("CSEC");
-  target = target[0] + 'students';
+  let head = user.split("CSEC");
+  head = head[0];
+  let target = head + 'students';
   let home = user.split("batches");
   home = home[0] + '@uttarauniversity.edu.bd';
   let code = user.split('CSEC');
@@ -33,6 +34,7 @@ function Students() {
   const [delId, setDelId] = useState();
   const [excelData, setExcelData] = useState(null);
   const [Cdate,setCDate] = useState(null);
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
     const currentDate = new Date();
@@ -56,7 +58,20 @@ function Students() {
       }
     };
     fetchData();
-  }, [getSt, code, rerend])
+
+    let link = head + 'courses';
+    const fetchTitle = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/getTitle/data', { link, code });
+        const result = response.data.result;
+        setTitle(result[0].title);
+        // console.log(result[0].title);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTitle();
+  }, [getSt, code, rerend,head])
 
 
 
@@ -251,12 +266,12 @@ function Students() {
         </div>
       </div>
       <div className="w-full flex justify-between text-white pt-4 px-4">
-        <div className="font-semibold text-xl">Software Engineering</div>
+        <div className="font-semibold text-xl">{title}</div>
         <div>
           <input type="date" id="dateInput" value={today} onChange={handleDateChange} className="w-[28px] xxsm:w-full text-white border-2 rounded bg-black xxsm:px-[4px]" max={`${Cdate}`}/>
         </div>
       </div>
-      <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-scroll py-6 px-4 h-[${height}px] mb-4`}>
+      <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-scroll py-8 px-4 h-[${height}px] mb-4`}>
         <table className="text-white border-2 w-full border-collapse min-w-[500px]">
           <thead>
             <tr className="border-2">
@@ -279,8 +294,8 @@ function Students() {
         </table>
       </div>
       <div className="w-full flex justify-between px-4">
-        <button onClick={handleView} className="border-2 py-2 px-4 text-white rounded">View</button>
-        <button onClick={saveData} className="border-2 py-2 px-4 text-white rounded">Save</button>
+        <button onClick={handleView} className="border-2 border-black py-2 px-4 text-black rounded fixed bottom-0 left-4 bg-[#fff] hover:bg-[#000] hover:text-white hover:border-white">View</button>
+        <button onClick={saveData} className="border-2 py-2 border-black px-4 text-black rounded fixed bottom-0 right-4 bg-[#fff] hover:bg-[#000] hover:text-white hover:border-white">Save</button>
       </div>
       {
         showDelConf ?
