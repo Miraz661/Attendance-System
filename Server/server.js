@@ -183,7 +183,8 @@ app.post('/addCourse/:user', (req, res) => {
       stName varchar(100) not null,
       stBatch varchar(10) not null,
       stSection varchar(10) not null,
-      stCourseCode varchar(100) not null
+      stCourseCode varchar(100) not null,
+      UNIQUE(stId,stCourseCode)
   );`)
   const sql = `INSERT INTO ${batchUrl} (id,code,title,img) VALUES (?,?,?,?)`;
   let id = 'NULL';
@@ -236,7 +237,8 @@ app.post('/addAllStudent/:target/:code', (req, res) => {
       date varchar(50) not null,
       stId varchar(50) not null,
       courseCode varchar(50) not null,
-      Attendance varchar(50) not null
+      Attendance varchar(50) not null,
+      UNIQUE(date,stId)
   );`)
   updatedData.forEach(async (row) => {
     const id = row[1];

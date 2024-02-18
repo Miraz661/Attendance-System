@@ -32,6 +32,7 @@ function Students() {
   const [rerend, setRerend] = useState(0);
   const [delId, setDelId] = useState();
   const [excelData, setExcelData] = useState(null);
+  const [Cdate,setCDate] = useState(null);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -40,6 +41,7 @@ function Students() {
     const day = String(currentDate.getDate()).padStart(2, '0');
     const date = `${year}-${month}-${day}`;
     setToday(date);
+    setCDate(date);
     const calculatedHeight = window.innerHeight - 191;
     setHeight(calculatedHeight);
   }, [height])
@@ -161,8 +163,8 @@ function Students() {
   const saveData = async () => {
     let data = attendanceData;
     console.log(data);
-    if (Object.keys(data).length == 0) {
-      // console.log("no data");
+    if (Object.keys(data).length == 0 || today == '') {
+      console.log("no data");
     } else {
       try {
         const response = await axios.post(`http://localhost:3000/addAttendance/${target}`, { data, code, today });
@@ -252,7 +254,7 @@ function Students() {
       <div className="w-full flex justify-between text-white pt-4 px-4">
         <div className="font-semibold text-xl">Software Engineering</div>
         <div>
-          <input type="date" id="dateInput" value={today} onChange={handleDateChange} className="w-[28px] xxsm:w-full text-white border-2 rounded bg-black xxsm:px-[4px]" />
+          <input type="date" id="dateInput" value={today} onChange={handleDateChange} className="w-[28px] xxsm:w-full text-white border-2 rounded bg-black xxsm:px-[4px]" max={`${Cdate}`}/>
         </div>
       </div>
       <div className={`hide-scrollbar w-full xxsm:overflow-y-scroll xxsm:overflow-x-hidden overflow-scroll py-6 px-4 h-[${height}px] mb-4`}>
